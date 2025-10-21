@@ -8,7 +8,7 @@ pygame.init()
 # Screen settings
 WIDTH, HEIGHT = 600, 400
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Chase Game")
+pygame.display.set_caption("Mouse Chase Game")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -34,9 +34,6 @@ def move_enemy_towards_player(enemy_x, enemy_y, player_x, player_y, speed):
 def game_loop():
     # Player settings
     player_size = 40
-    player_x = WIDTH // 2
-    player_y = HEIGHT // 2
-    player_speed = 5
 
     # Enemy settings
     enemy_size = 40
@@ -57,16 +54,14 @@ def game_loop():
                 pygame.quit()
                 exit()
 
-        # Player movement (WASD)
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w] and player_y > 0:
-            player_y -= player_speed
-        if keys[pygame.K_s] and player_y < HEIGHT - player_size:
-            player_y += player_speed
-        if keys[pygame.K_a] and player_x > 0:
-            player_x -= player_speed
-        if keys[pygame.K_d] and player_x < WIDTH - player_size:
-            player_x += player_speed
+        # Player follows the mouse
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        player_x = mouse_x - player_size // 2
+        player_y = mouse_y - player_size // 2
+
+        # Keep player inside the screen
+        player_x = max(0, min(WIDTH - player_size, player_x))
+        player_y = max(0, min(HEIGHT - player_size, player_y))
 
         # Move enemy towards player
         enemy_x, enemy_y = move_enemy_towards_player(enemy_x, enemy_y, player_x, player_y, enemy_speed)
